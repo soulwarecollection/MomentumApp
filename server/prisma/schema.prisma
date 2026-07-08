@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// IDs are client-generated (offline-first). updatedAt is @updatedAt so the
+// server always stamps the accepted-write time — used as the pull cursor.
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  plans         Plan[]
+  sessions      Session[]
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  jti       String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+// ---------- Sync-able models (client-supplied IDs, soft-delete) ----------
+
+model Plan {
+  id              String    @id
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String
+  currentDayIndex Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  days     PlanDay[]
+  sessions Session[]
+
+  @@map("plans")
+}
+
+model PlanDay {
+  id        String    @id
+  planId    String
+  plan      Plan      @relation(fields: [planId], references: [id], onDelete: Cascade)
+  dayIndex  Int
+  name      String?
+  isRest    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  exercises PlanExercise[]
+
+  @@map("plan_days")
+}
+
+model PlanExercise {
+  id            String    @id
+  planDayId     String
+  planDay       PlanDay   @relation(fields: [planDayId], references: [id], onDelete: Cascade)
+  exerciseId    String
+  position      Int
+  targetSets    Int?
+  targetMetrics Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  @@map("plan_exercises")
+}
+
+model Session {
+  id          String    @id
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId      String?
+  plan        Plan?     @relation(fields: [planId], references: [id])
+  dayIndex    Int?
+  startedAt   DateTime
+  completedAt DateTime?
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  exercises SessionExercise[]
+
+  @@map("sessions")
+}
+
+model SessionExercise {
+  id         String    @id
+  sessionId  String
+  session    Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exerciseId String
+  position   Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  loggedSets LoggedSet[]
+
+  @@map("session_exercises")
+}
+
+model LoggedSet {
+  id                String    @id
+  sessionExerciseId String
+  sessionExercise   SessionExercise @relation(fields: [sessionExerciseId], references: [id], onDelete: Cascade)
+  setIndex          Int
+  metrics           Json
+  isPr              Boolean   @default(false)
+  completedAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
+
+  @@map("logged_sets")
+}
