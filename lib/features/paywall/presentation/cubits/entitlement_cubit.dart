@@ -33,6 +33,12 @@ class EntitlementCubit extends Cubit<EntitlementState> {
   EntitlementCubit(this._gateway, this._prefs)
     : super(const EntitlementState.loading());
 
+  /// Debug builds always expose the local Pro override. Release/profile builds
+  /// only expose it when they are compiled specifically for internal testing:
+  /// `--dart-define=ENABLE_PRO_TESTER_SWITCH=true`.
+  static const bool proTestingEnabled =
+      kDebugMode || bool.fromEnvironment('ENABLE_PRO_TESTER_SWITCH');
+
   static const _debugProKey = 'debug_pro_override';
 
   final PurchasesGateway _gateway;
@@ -47,7 +53,8 @@ class EntitlementCubit extends Cubit<EntitlementState> {
   Future<void> initialize() async {
     if (_initialized) return;
     _initialized = true;
-    _debugOverride = kDebugMode && (_prefs.getBool(_debugProKey) ?? false);
+    _debugOverride =
+        proTestingEnabled && (_prefs.getBool(_debugProKey) ?? false);
 
     try {
       final configured = await _gateway.configure();
@@ -91,7 +98,7 @@ class EntitlementCubit extends Cubit<EntitlementState> {
   }
 
   Future<void> setDebugPro({required bool value}) async {
-    if (!kDebugMode) return;
+    if (!proTestingEnabled) return;
     _debugOverride = value;
     await _prefs.setBool(_debugProKey, value);
     _emitReady(configured: state.isRevenueCatConfigured);

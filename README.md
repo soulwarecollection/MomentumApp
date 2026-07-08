@@ -24,8 +24,16 @@ Use `--dart-define=REVENUECAT_ENTITLEMENT_ID=your_entitlement` when the
 entitlement identifier is not `pro`. If no key is supplied, the app remains
 fully usable on the Free tier and checkout is disabled gracefully.
 
-In debug builds, **You → Developer → Debug · Momentum Pro** toggles a persisted
-local entitlement for testing every gate without contacting a store.
+Debug builds show a local Pro preview switch under **You → Developer & QA**.
+To include the same switch in an internal profile or release build, compile it
+with:
+
+```sh
+flutter build ipa --dart-define=ENABLE_PRO_TESTER_SWITCH=true
+```
+
+Use that flag only for developer and tester builds. Store production builds
+omit the switch and ignore any previously saved local override.
 
 ## Development
 

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -232,9 +231,9 @@ class _ProfileBody extends StatelessWidget {
                 _SeedDataTile(),
               ],
             ),
-            if (kDebugMode) ...[
+            if (EntitlementCubit.proTestingEnabled) ...[
               const SizedBox(height: 24),
-              const _SectionHeader(label: 'Developer'),
+              const _SectionHeader(label: 'Developer & QA'),
               const SizedBox(height: 8),
               const _SettingsGroup(
                 children: [
@@ -667,10 +666,10 @@ class _DebugProTile extends StatelessWidget {
     final state = context.watch<EntitlementCubit>().state;
     return _SettingsTile(
       icon: PhosphorIconsRegular.flask,
-      title: 'Debug · Momentum Pro',
+      title: 'Test Momentum Pro',
       subtitle: state.isDebugOverride
-          ? 'Local Pro override is on'
-          : 'Test every Pro gate locally',
+          ? 'Local Pro preview is on'
+          : 'Preview every Pro feature on this device',
       trailing: Switch.adaptive(
         value: state.isDebugOverride,
         onChanged: (value) => unawaited(

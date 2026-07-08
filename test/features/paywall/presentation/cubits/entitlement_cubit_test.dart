@@ -51,4 +51,8 @@ void main() {
     expect(prefs.getBool('debug_pro_override'), isTrue);
     await cubit.close();
   });
+
+  test('Pro testing switch is available in debug and test builds', () {
+    expect(EntitlementCubit.proTestingEnabled, isTrue);
+  });
 }
