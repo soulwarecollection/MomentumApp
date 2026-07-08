@@ -55,6 +55,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://momentum:momentum@localhost:5432/momentum?schema=public
       DATABASE_URL_TEST: postgresql://momentum:momentum@localhost:5432/momentum_test?schema=public
+      DIRECT_URL: postgresql://momentum:momentum@localhost:5432/momentum?schema=public
       JWT_ACCESS_SECRET: ci-access-secret-not-for-production-use-only
       JWT_REFRESH_SECRET: ci-refresh-secret-not-for-production-use-only
       JWT_ACCESS_EXPIRES_IN: 15m

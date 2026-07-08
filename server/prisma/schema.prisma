@@ -3,8 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Migrations run through the direct (non-pooled) connection — required by
+  // Neon/PgBouncer-style poolers, which don't support the session-level
+  // features `prisma migrate` needs. The app itself always uses `url` above.
+  directUrl = env("DIRECT_URL")
 }
 
 // IDs are client-generated (offline-first). updatedAt is @updatedAt so the
