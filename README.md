@@ -35,3 +35,14 @@ dart run build_runner build
 flutter analyze
 flutter test
 ```
+
+## Backend (sync server)
+
+See [server/README.md](server/README.md) — NestJS + Prisma + PostgreSQL. Requires a local
+Postgres instance (or `docker compose up` from `server/`) and a `server/.env`
+copied from `server/.env.example`.
+
+## Privacy policy
+
+Hosted via GitHub Pages from [`docs/`](docs/index.html) — enable it once under
+Settings → Pages → Source: Deploy from a branch → `main` / `docs`.
