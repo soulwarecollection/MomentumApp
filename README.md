@@ -24,9 +24,12 @@ Use `--dart-define=REVENUECAT_ENTITLEMENT_ID=your_entitlement` when the
 entitlement identifier is not `pro`. If no key is supplied, the app remains
 fully usable on the Free tier and checkout is disabled gracefully.
 
-Debug builds show a local Pro preview switch under **You → Developer & QA**.
-To include the same switch in an internal profile or release build, compile it
-with:
+Debug builds and iOS TestFlight installations automatically show a local Pro
+preview switch under **You → Developer & QA**. App Store installations do not
+show or honor the switch, even when promoted from the same archive.
+
+To include the switch in another internal profile or release build (including
+Android tester builds), compile it with:
 
 ```sh
 flutter build ipa --dart-define=ENABLE_PRO_TESTER_SWITCH=true

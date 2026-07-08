@@ -84,7 +84,8 @@ class _ProfileBody extends StatelessWidget {
     final theme = Theme.of(context);
     final tokens = context.brandTokens;
     final streak = _streak;
-    final isPro = context.watch<EntitlementCubit>().state.isPro;
+    final entitlement = context.watch<EntitlementCubit>().state;
+    final isPro = entitlement.isPro;
 
     return SafeArea(
       child: Scaffold(
@@ -231,7 +232,7 @@ class _ProfileBody extends StatelessWidget {
                 _SeedDataTile(),
               ],
             ),
-            if (EntitlementCubit.proTestingEnabled) ...[
+            if (entitlement.isProTestingEnabled) ...[
               const SizedBox(height: 24),
               const _SectionHeader(label: 'Developer & QA'),
               const SizedBox(height: 8),

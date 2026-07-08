@@ -53,6 +53,6 @@ void main() {
   });
 
   test('Pro testing switch is available in debug and test builds', () {
-    expect(EntitlementCubit.proTestingEnabled, isTrue);
+    expect(EntitlementCubit.buildAllowsProTesting, isTrue);
   });
 }
